@@ -1,6 +1,5 @@
 #!/bin/bash
 
-source $HOME/.bashrc
 NEED_TO_BUILD=0
 LOGDIR=$HOME/artiq_logs
 MACHINE=$(uname -m)
