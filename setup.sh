@@ -71,3 +71,7 @@ done
 echo "export LD_LIBRARY_PATH=$PWD/packages/usr/lib/x86_64-linux-gnu:$PWD/packages/usr/local/x86_64-unknown-linux-gnu/or1k-elf/lib:\$LD_LIBRARY_PATH" >> $HOME/.mlabs/build_settings.sh
 echo "export PATH=$PWD/packages/usr/local/llvm-or1k/bin:$PWD/packages/usr/local/bin:$PWD/packages/usr/bin:\$PATH" >> $HOME/.mlabs/build_settings.sh
 
+echo "Copying artiq_builder.example.sh to $HOME/.artiq_builder"
+echo "Modify it to adapt to your own settings (paths, credentials)"
+cp artiq_builder.example.sh $HOME/.artiq_builder
+
