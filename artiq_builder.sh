@@ -108,7 +108,7 @@ cd $SRC_DIR/conda
 run_for "conda build artiq" $((60*50)) || exit 1 # we limit packaging time to 50 min because ISE can hang forever...
 
 anaconda login --hostname $(hostname) --user ${ANACONDA_LOGIN} --password ${ANACONDA_PASSWORD}
-anaconda upload --user fallen --channel dev $HOME/miniconda3/conda-bld/$BITNESS/artiq-*.tar.bz2
+anaconda upload --user ${ANACONDA_REPO} --channel ${ANACONDA_CHANNEL} $HOME/miniconda3/conda-bld/$BITNESS/artiq-*.tar.bz2
 
 echo "$REMOTE" > $HOME/.artiq_builder_lastbuild
 remove_lock
