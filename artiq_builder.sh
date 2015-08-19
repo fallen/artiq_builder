@@ -114,6 +114,8 @@ else
 	echo "Building $REMOTE"
 fi
 
+rm -f $HOME/miniconda3/conda-bld/$BITNESS/artiq-*.tar.bz2
+
 # Let's build!
 
 cd $SRC_DIR/conda
