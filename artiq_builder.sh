@@ -34,7 +34,10 @@ function run_for
                 then
                         if [ $total_time -gt $allowed_time ]
                         then
-                                kill -9 $CMD_PID
+				# get process group ID
+				PGID=$(ps -p $CMD_PID -o "%r" --no-headers | awk '{ print $1 }')
+                                kill -9 -$PGID # kill the whole process group (all children)
+				[ "$?" != "0" ] || kill -9 $CMD_PID # if it failed, just kill the parent PID
                                 wait $CMD_PID
                                 echo "command \"$1\" took too much time ( > $2 sec ), killing it."
                                 return 1
@@ -104,9 +107,8 @@ fi
 # Let's build!
 
 cd $SRC_DIR/conda
-run_for "conda build artiq" $((60*50)) || exit 1 # we limit packaging time to 50 min because ISE can hang forever...
+run_for "conda build artiq" $((60*50)) || remove_lock && exit 1 # we limit packaging time to 50 min because ISE can hang forever...
 
-anaconda login --hostname $(hostname) --user ${ANACONDA_LOGIN} --password ${ANACONDA_PASSWORD}
 anaconda upload --user ${ANACONDA_REPO} --channel ${ANACONDA_CHANNEL} $HOME/miniconda3/conda-bld/$BITNESS/artiq-*.tar.bz2
 
 echo "$REMOTE" > $HOME/.artiq_builder_lastbuild
