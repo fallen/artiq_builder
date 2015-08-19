@@ -108,7 +108,7 @@ fi
 # Let's build!
 
 cd $SRC_DIR/conda
-run_for "conda build artiq" $((60*50)) || remove_lock && exit 1 # we limit packaging time to 50 min because ISE can hang forever...
+run_for "conda build artiq" $((60*50)) || (remove_lock && exit 1) # we limit packaging time to 50 min because ISE can hang forever...
 
 anaconda upload --user ${ANACONDA_REPO} --channel ${ANACONDA_CHANNEL} $HOME/miniconda3/conda-bld/$BITNESS/artiq-*.tar.bz2
 
