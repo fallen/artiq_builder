@@ -19,6 +19,18 @@ function remove_lock
 	rm -f $HOME/.artiq_builder_lock
 }
 
+function list_descendants
+{
+  local children=$(ps -o pid= --ppid "$1")
+
+  for pid in $children
+  do
+    list_descendants "$pid"
+  done
+
+  echo "$children"
+}
+
 function run_for
 {
 # $1 is the command to run
@@ -34,10 +46,7 @@ function run_for
                 then
                         if [ $total_time -gt $allowed_time ]
                         then
-				# get process group ID
-				PGID=$(ps -p $CMD_PID -o "%r" --no-headers | awk '{ print $1 }')
-                                kill -9 -$PGID # kill the whole process group (all children)
-				[ "$?" != "0" ] || kill -9 $CMD_PID # if it failed, just kill the parent PID
+                                kill -9 $CMD_PID $(list_descendants $CMD_PID) # kill the whole process group (all children)
                                 wait $CMD_PID
 				conda clean --lock # remove conda lock
                                 echo "command \"$1\" took too much time ( > $2 sec ), killing it."
@@ -108,7 +117,13 @@ fi
 # Let's build!
 
 cd $SRC_DIR/conda
-run_for "conda build artiq" $((60*50)) || (remove_lock && exit 1) # we limit packaging time to 50 min because ISE can hang forever...
+run_for "conda build artiq" $((50*60)) # we limit packaging time to 50 min because ISE can hang forever...
+
+if [ "$?" != "0" ]
+then
+	remove_lock
+	exit 1
+fi
 
 anaconda upload --user ${ANACONDA_REPO} --channel ${ANACONDA_CHANNEL} $HOME/miniconda3/conda-bld/$BITNESS/artiq-*.tar.bz2
 
