@@ -39,6 +39,7 @@ function run_for
                                 kill -9 -$PGID # kill the whole process group (all children)
 				[ "$?" != "0" ] || kill -9 $CMD_PID # if it failed, just kill the parent PID
                                 wait $CMD_PID
+				conda clean --lock # remove conda lock
                                 echo "command \"$1\" took too much time ( > $2 sec ), killing it."
                                 return 1
 			else
