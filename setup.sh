@@ -60,6 +60,7 @@ then
 	wget $ISE_URL -O ise.tar.gz.gpg
 	echo $ISE_PASSWORD | gpg --passphrase-fd 0 ise.tar.gz.gpg
 	sudo tar -C / -xzf ise.tar.gz
+	sudo find /opt/Xilinx -type d -exec chmod 755 {} \; # Fix rights
 fi
 
 
@@ -70,6 +71,7 @@ then
 	wget $VIVADO_URL -O vivado.tar.gz.gpg
 	echo $VIVADO_PASSWORD | gpg --passphrase-fd 0 vivado.tar.gz.gpg
 	sudo tar -C / -xzf vivado.tar.gz
+	sudo find /opt/Xilinx -type d -exec chmod 755 {} \; # Fix rights
 fi
 
 if [ ! -f ~/.Xilinx/Xilinx.lic ]
