@@ -99,7 +99,7 @@ then
 		ANACONDA_INSTALL_PATH=$HOME/anaconda3/
 	elif [ "$(uname -o)" = "Cygwin" ]
 	then
-		ANACONDA_INSTALL_PATH=$USERPROFILE/Anaconda3
+		ANACONDA_INSTALL_PATH=/cygdrive/c/Users/$USER/Anaconda3
 	fi
 fi
 
