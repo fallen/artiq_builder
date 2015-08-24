@@ -2,9 +2,18 @@
 
 NEED_TO_BUILD=0
 LOGDIR=$HOME/artiq_logs
-MACHINE=$(uname -m)
-BITNESS=linux-$(getconf LONG_BIT)
 CONFIG=$HOME/.artiq_builder
+
+if [ "$(uname -o)" = "GNU/Linux" ]
+then
+	BITNESS=linux-$(getconf LONG_BIT)
+elif [ "$(uname -o)" = "Cygwin" ]
+then
+	BITNESS=win-$(getconf LONG_BIT)
+else
+	echo "Only Linux and Cygwin platforms are supported"
+	exit 1
+fi
 
 if [ -f $HOME/.artiq_builder_lock ]
 then
@@ -83,6 +92,17 @@ then
 	SRC_DIR=$HOME/artiq
 fi
 
+if [ -z $ANACONDA_INSTALL_PATH ]
+then
+	if [ "$(uname -o)" = "GNU/Linux" ]
+	then
+		ANACONDA_INSTALL_PATH=$HOME/anaconda3/
+	elif [ "$(uname -o)" = "Cygwin" ]
+	then
+		ANACONDA_INSTALL_PATH=$USERPROFILE/Anaconda3
+	fi
+fi
+
 if [ ! -d $SRC_DIR ]
 then
 	echo "Cloning for the first time..."
@@ -114,7 +134,7 @@ else
 	echo "Building $REMOTE"
 fi
 
-rm -f $HOME/miniconda3/conda-bld/$BITNESS/artiq-*.tar.bz2
+rm -f $ANACONDA_INSTALL_PATH/conda-bld/$BITNESS/artiq-*.tar.bz2
 
 # Let's build!
 
@@ -127,7 +147,7 @@ then
 	exit 1
 fi
 
-anaconda upload --user ${ANACONDA_REPO} --channel ${ANACONDA_CHANNEL} $HOME/miniconda3/conda-bld/$BITNESS/artiq-*.tar.bz2
+anaconda upload --user ${ANACONDA_REPO} --channel ${ANACONDA_CHANNEL} $ANACONDA_INSTALL_PATH/conda-bld/$BITNESS/artiq-*.tar.bz2
 
 echo "$REMOTE" > $HOME/.artiq_builder_lastbuild
 remove_lock
