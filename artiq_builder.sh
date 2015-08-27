@@ -99,7 +99,7 @@ then
 		ANACONDA_INSTALL_PATH=$HOME/anaconda3/
 	elif [ "$(uname -o)" = "Cygwin" ]
 	then
-		ANACONDA_INSTALL_PATH=/cygdrive/c/Users/$USER/Anaconda3
+		ANACONDA_INSTALL_PATH=$(cygpath -u -O)/../Anaconda3
 	fi
 fi
 
@@ -134,12 +134,13 @@ else
 	echo "Building $REMOTE"
 fi
 
-rm -f $ANACONDA_INSTALL_PATH/conda-bld/$BITNESS/artiq-*.tar.bz2
+rm -f ${ANACONDA_INSTALL_PATH}/conda-bld/${BITNESS}/artiq-*.tar.bz2
 
 # Let's build!
 
 cd $SRC_DIR/conda
-run_for "conda build artiq" $((50*60)) # we limit packaging time to 50 min because ISE can hang forever...
+# we limit packaging time to 50 min because ISE can hang forever...
+run_for "conda build artiq" $((50*60))
 
 if [ "$?" != "0" ]
 then
@@ -147,7 +148,14 @@ then
 	exit 1
 fi
 
-anaconda upload --user ${ANACONDA_REPO} --channel ${ANACONDA_CHANNEL} $ANACONDA_INSTALL_PATH/conda-bld/$BITNESS/artiq-*.tar.bz2
+if [ "$(uname -o)" = "Cygwin" ]
+then
+	PKG_PATH=$(cygpath -w $ANACONDA_INSTALL_PATH/conda-bld/$BITNESS/artiq-*.tar.bz2)
+else
+	PKG_PATH=$ANACONDA_INSTALL_PATH/conda-bld/$BITNESS/artiq-*.tar.bz2
+fi
+
+anaconda upload --user ${ANACONDA_REPO} --channel ${ANACONDA_CHANNEL} $PKG_PATH
 
 echo "$REMOTE" > $HOME/.artiq_builder_lastbuild
 remove_lock
