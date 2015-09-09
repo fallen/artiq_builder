@@ -139,8 +139,8 @@ rm -f ${ANACONDA_INSTALL_PATH}/conda-bld/${BITNESS}/artiq-*.tar.bz2
 # Let's build!
 
 cd $SRC_DIR/conda
-# we limit packaging time to 50 min because ISE can hang forever...
-run_for "conda build artiq" $((50*60))
+# we limit packaging time to 70 min because ISE can hang forever...
+run_for "conda build artiq" $((70*60))
 
 if [ "$?" != "0" ]
 then
