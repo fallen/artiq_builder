@@ -92,12 +92,6 @@ export MACADDR=$macaddress
 export LD_PRELOAD=$PWD/impersonate_macaddress/impersonate_macaddress.so
 EOF
 
-if [ "$(which or1k-linux-ar)" = "" ]
-then
-	echo "Installing or1k binutils"
-	source setup/binutils.sh
-fi
-
 if [ "$(llc --version | grep or1k)" = "" ]
 then
 	echo "Installing or1k LLVM"
