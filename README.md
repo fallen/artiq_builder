@@ -15,7 +15,11 @@ Then install all ARTIQ conda package build time dependencies:
 ```
 $ conda config --set always_yes yes --set changeps1 no
 $ conda install conda-build jinja2 anaconda-client
+$ cp artiq_builder/artiq_builder.example $HOME/.artiq_builder
 ```
+
+Then edit `$HOME/.artiq_builder` to configure the build options
+
 set up artiq_builder.sh as a cron job:
 
 `$ crontab -e`
@@ -40,7 +44,11 @@ Alternatively, there is an experimental (and poorly tested) automatic installer:
 ```
 $ conda config --set always_yes yes --set changeps1 no
 $ conda install conda-build jinja2 anaconda-client
+$ cp artiq_builder/artiq_builder.example $HOME/.artiq_builder
 ```
+
+Then edit `$HOME/.artiq_builder` to configure the build options
+
 set up artiq_builder.sh as a cron job:
 
 `$ crontab -e`
